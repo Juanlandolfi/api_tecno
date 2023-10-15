@@ -1,0 +1,5 @@
+fastapi
+PyMySQL
+SQLAlchemy
+uvicorn
+dotenv
