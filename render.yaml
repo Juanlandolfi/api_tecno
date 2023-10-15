@@ -1,7 +1,7 @@
 services:
   # A Docker web service
   - type: web
-    name: fastapi-
+    name: fastapi-tecno
     runtime: python
     plan: free
     autoDeploy: false
