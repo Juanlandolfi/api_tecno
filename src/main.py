@@ -2,13 +2,13 @@
 
 from fastapi import FastAPI
 
-from .routes.app_router import router
+from src.routes.app_router import router
 
 
 app = FastAPI()
 
 @app.get("/")
-async def list_products():
+async def home():
     '''First endpoint test'''
     return {'message': 'It seems to work'}
 
