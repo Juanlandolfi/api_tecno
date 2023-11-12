@@ -82,11 +82,15 @@ class Category(BaseModel):
     class Config:
         from_attributes = True
 
+class Maker(BaseModel):
+    id: int
+    maker_name: str
 
 class ResponseGetProducts(Product):
     id_product: int
-    category: Category = []
+    category: Category = None
     tag: List[Tags] = []
+    maker: Maker = None
     class Config:
         from_attributes = True
 
