@@ -29,9 +29,6 @@ def create_new_product( db: Session, product: schemas.Product):
     # Get tags ids and remove form dict. Then get list of ORM Tags
     tag_ids = dict_new_prod.pop('tag', [])
     tags = get_tags_by_ids(db, tags_ids=tag_ids)
-    # Get categories ids and remove form dict. Then get list of ORM Categories 
-    # category_ids = dict_new_prod.pop('category', [])
-    # categories = get_category_by_id(db, category_ids=category_ids)
     #Create new product
     new_product = models.ProductModel(**dict_new_prod, tag=tags)
     # Add to session and commit
