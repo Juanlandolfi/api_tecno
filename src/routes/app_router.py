@@ -83,22 +83,61 @@ async def get_products(session: Session = Depends(get_db)):
 
 
 @router.get('/get_categories', tags=[RouteTags.CATEGORIES])
-async def get_categories(session: Session = Depends(get_db)):
+async def get_categories(db: Session = Depends(get_db)):
     '''Endpoint to retrieve categories from database'''
-    return session.query(CategoriesModel).all()
+    return db.query(CategoriesModel).all()
 
 
 @router.get('/get_tags', tags=[RouteTags.TAGS])
-async def get_tags(session: Session = Depends(get_db)):
+async def get_tags(db: Session = Depends(get_db)):
     '''Endpoint to retrieve tags from database'''
-    return session.query(TagsModel).all()
+    return db.query(TagsModel).all()
 
 
 @router.get('/get_makers', tags=[RouteTags.MAKERS])
-async def get_makers(session: Session = Depends(get_db)):
+async def get_makers(db: Session = Depends(get_db)):
     '''Endpoint to retrieve tags from database'''
-    return session.query(MakerModel).all()
+    return db.query(MakerModel).all()
 
+
+# Delete
+
+@router.delete('/delete_product/{id}', tags=[RouteTags.PRODUCTS])
+async def delete_product(id: int, db: Session = Depends(get_db)):
+    product = db.get(ProductModel, id)
+    if product:
+        db.delete(product)
+        db.commit()
+        return {'message': 'Product Deleted'}
+    else: 
+        return {'message': 'Could not find product ID'}
+
+
+@router.delete('/delete_tag/{id}', tags=[RouteTags.TAGS])
+async def delete_tag(id: int, db: Session = Depends(get_db)):
+    tag = db.get(TagsModel, id)
+    if tag:
+        db.delete(tag)
+        db.commit()
+        return {'message': 'Tag Deleted'}
+    else: 
+        return {'message': 'Could not find tag ID'}
+    
+
+@router.delete('/delete_category/{id}', tags=[RouteTags.CATEGORIES])
+async def delete_category(category_id: int, db: Session = Depends(get_db)):
+    return crud.delete_category(db, category_id)
+
+
+# UPDATE
+@router.patch('/update_product/{id}', tags=[RouteTags.PRODUCTS])
+async def update_product(product_id: int, product_update: schemas.Product, db: Session = Depends(get_db)):
+    return crud.update_product(db, product_id, product_update)
+
+
+
+
+## Delete after testing
 @router.patch('/drop_all')
 async def drop_all():
     '''Only While Testing. Drop Everything'''

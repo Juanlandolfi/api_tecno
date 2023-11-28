@@ -7,28 +7,13 @@ class Product(BaseModel):
     """Product schema for products in TECNOPOWER"""
     product_name: str
     price: float = Field(gte=0)
-    code_bar: str | None = None
-    code_prov: str | None = None
     maker_id: int  | None = None
     stock: int | None = 0
     description: str | None = 'Producto sin descripción'
     category_id: int  | None 
     tag: List[int] | None = []
-    supplier_id: int | None = None
     img_url: str | None = None
     
-    class Config:
-        from_attributes = True
-
-
-class Supplier(BaseModel):
-    """Supplier schema"""
-    supplier_id: int
-    supplier_name: str
-    supplier_address: str
-    supplier_phone1: int
-    supplier_phone2: int
-    supplier_cuit: int
     class Config:
         from_attributes = True
 
@@ -86,14 +71,15 @@ class Maker(BaseModel):
     id: int
     maker_name: str
 
-class ResponseGetProducts(Product):
-    id_product: int
-    category: Category = None
-    tag: List[Tags] = []
-    maker: Maker = None
-    class Config:
-        from_attributes = True
-
 
 class MakeCreate(BaseModel):
     make_name: str
+
+class ResponseGetProducts(Product):
+    id_product: int
+    category: Category | None= None
+    tag: List[Tags] | None = []
+    maker: Maker | None = None
+    class Config:
+        from_attributes = True
+

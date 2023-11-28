@@ -10,6 +10,7 @@ from fastapi import status
 # from pymysql.err import IntegrityError
 
 
+# GET
 def get_category_by_id(db: Session, category_ids: int) -> List[models.CategoriesModel]:
     '''Return List Of Category ORM objects that match given ids'''
     categories = db.scalars(select(models.CategoriesModel)
@@ -22,6 +23,8 @@ def get_tags_by_ids(db: Session, tags_ids: List[int]) -> List[models.TagsModel]:
     '''Return List Of Tags ORM objects that match given ids'''
     tags = db.scalars(select(models.TagsModel).filter(models.TagsModel.id.in_(tags_ids))).all()
     return tags
+
+# CREATE
 
 def create_new_product( db: Session, product: schemas.Product):
     '''Create New Product ORM object and commit to database'''
@@ -70,7 +73,44 @@ def create_new_tag(db: Session, item: schemas.StringItem):
         )
         db.commit()
         return {"message": "Tag added"}
+
+
+# DELETE
+
+def delete_category(db: Session, category_id: int):
+    category = db.get(models.CategoriesModel, category_id)
+    if category:
+        db.delete(category)
+        db.commit()
+        return {'message': 'Category Deleted'}
+    else: 
+        return {'message': 'Could not find category ID'}
+
+
+
+# UPDATE
+
+def update_product(db: Session, product_id: int, product_update: schemas.Product):
+    product = db.get(models.ProductModel, product_id)
+    product_dict = product_update.model_dump(exclude_unset=True)
+    print(product)
+    print(product_dict)
+    if not product:
+        return {'message': 'Could not find product with given id'}
+    else:
+        tag_ids = product_dict.pop('tag', [])
+        tags = get_tags_by_ids(db, tags_ids=tag_ids)
+        for key,value in product_dict.items():
+            print(key,value)
+            setattr(product, key, value)
+        setattr(product, 'tag', tags)
+        db.add(product)
+        db.commit()
+        return {'message': 'Product updated'}
     
+
+
+
 
 ### For testing  Creating mock data
 def create_mock_data(db: Session):
@@ -100,3 +140,4 @@ def create_mock_data(db: Session):
                  )
     db.commit()
     return {'message': 'Mocked data added'}
+
